@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/OWNER/btc-node-data/main/schema/aggregate.json",
+  "title": "btc-node-data pre-aggregated series (dashboard input)",
+  "type": "object",
+  "required": [
+    "granularity",
+    "resolution",
+    "generated_at",
+    "series"
+  ],
+  "properties": {
+    "granularity": {
+      "enum": [
+        "day",
+        "week",
+        "month",
+        "quarter",
+        "year",
+        "all"
+      ]
+    },
+    "resolution": {
+      "enum": [
+        "snapshot",
+        "daily"
+      ],
+      "description": "snapshot: each point is one snapshot / daily: each point aggregates one day (instantaneous is averaged, union_24h is the max)"
+    },
+    "generated_at": {
+      "type": "integer"
+    },
+    "series": {
+      "type": "object",
+      "description": "clearnet and onion are kept separate; combine only at display time",
+      "properties": {
+        "clearnet": {
+          "$ref": "#/$defs/points"
+        },
+        "onion": {
+          "$ref": "#/$defs/points"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "points": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "integer",
+            "description": "ts (unix epoch)"
+          },
+          {
+            "type": "integer",
+            "description": "instantaneous"
+          },
+          {
+            "type": "integer",
+            "description": "union_24h"
+          },
+          {
+            "type": "integer",
+            "description": "candidates"
+          }
+        ],
+        "minItems": 4,
+        "maxItems": 4
+      }
+    }
+  }
+}

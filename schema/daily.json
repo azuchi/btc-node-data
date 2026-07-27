@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/OWNER/btc-node-data/main/schema/daily.json",
+  "title": "btc-node-data daily aggregate",
+  "type": "object",
+  "required": [
+    "date",
+    "snapshots"
+  ],
+  "properties": {
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "ts",
+          "network_class",
+          "candidates",
+          "instantaneous",
+          "union_24h",
+          "by_network",
+          "by_user_agent",
+          "crawler_ver",
+          "params_hash"
+        ],
+        "properties": {
+          "ts": {
+            "type": "integer",
+            "description": "Snapshot start time (unix epoch)"
+          },
+          "network_class": {
+            "enum": [
+              "clearnet",
+              "onion"
+            ]
+          },
+          "candidates": {
+            "type": "integer",
+            "description": "Number of probed candidates"
+          },
+          "instantaneous": {
+            "type": "integer",
+            "description": "Nodes that completed a handshake within one round (Bitnodes-style)"
+          },
+          "union_24h": {
+            "type": "integer",
+            "description": "Union of nodes with at least one success in the 24 hours preceding ts (KIT-style)"
+          },
+          "by_network": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Breakdown of successful nodes by network (ipv4/ipv6/onion)"
+          },
+          "by_country": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "clearnet only. Top N entries + other. Denominator is clearnet"
+          },
+          "by_asn": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "clearnet only. Top N entries + other"
+          },
+          "by_user_agent": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Top N entries + other"
+          },
+          "crawler_ver": {
+            "type": "string"
+          },
+          "params_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{8}$"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,45 @@
+# Rebuild and commit aggregates/ when daily/ is pushed.
+# Collection itself is done by systemd timers on the VPS. Actions cron is not used
+# (its delays make it unusable for scheduled observation, and it auto-disables
+# after 60 days of repository inactivity).
+name: build-aggregates
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'daily/**'
+      - 'scripts/build_aggregates.rb'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-aggregates
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+
+      - name: Rebuild aggregates
+        run: ruby scripts/build_aggregates.rb
+
+      - name: Commit aggregates
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add aggregates/
+          if git diff --cached --quiet; then
+            echo 'no aggregate changes'
+          else
+            git commit -m 'aggregates: rebuild'
+            git push
+          fi
