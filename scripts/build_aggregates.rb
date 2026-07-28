@@ -84,6 +84,7 @@ latest_daily['snapshots'].each do |s|
     'ts' => s['ts'],
     'instantaneous' => s['instantaneous'],
     'union_24h' => s['union_24h'],
+    'by_network' => s['by_network'],
     'by_country' => s['by_country'],
     'by_asn' => s['by_asn'],
     'by_user_agent' => s['by_user_agent']
