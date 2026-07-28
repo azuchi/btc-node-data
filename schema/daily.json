@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/OWNER/btc-node-data/main/schema/daily.json",
+  "$id": "https://raw.githubusercontent.com/azuchi/btc-node-data/main/schema/daily.json",
   "title": "btc-node-data daily aggregate",
   "type": "object",
   "required": [
