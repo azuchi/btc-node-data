@@ -72,3 +72,22 @@ RANGES.each do |granularity, (span, resolution)|
   puts "aggregates/#{granularity}.json: " +
        out_series.map { |k, v| "#{k}=#{v.size}pts" }.join(' ')
 end
+
+# latest.json: the newest snapshot per network class with its full breakdowns
+# (by_country / by_asn / by_user_agent), for the dashboard's map and ranking
+# views. Time-series files above stay lean; detail lives only here.
+latest_file = Dir.glob(File.join(DAILY_DIR, '**', '*.json')).max
+latest_daily = JSON.parse(File.read(latest_file))
+latest = { 'date' => latest_daily['date'], 'generated_at' => Time.now.to_i, 'networks' => {} }
+latest_daily['snapshots'].each do |s|
+  latest['networks'][s['network_class']] = {
+    'ts' => s['ts'],
+    'instantaneous' => s['instantaneous'],
+    'union_24h' => s['union_24h'],
+    'by_country' => s['by_country'],
+    'by_asn' => s['by_asn'],
+    'by_user_agent' => s['by_user_agent']
+  }.compact # onion has no by_country/by_asn; clearnet may lack them before geoip ran
+end
+File.write(File.join(OUT_DIR, 'latest.json'), JSON.generate(latest) + "\n")
+puts "aggregates/latest.json: #{latest['date']} (#{latest['networks'].keys.join(', ')})"
