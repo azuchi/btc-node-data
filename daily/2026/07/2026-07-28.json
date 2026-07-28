@@ -83,17 +83,6 @@
       }
     },
     {
-      "ts": 1785197774,
-      "network_class": "onion",
-      "candidates": 18378,
-      "instantaneous": 0,
-      "union_24h": 0,
-      "by_network": {},
-      "by_user_agent": {},
-      "crawler_ver": "0.1.0",
-      "params_hash": "36ae0f1f"
-    },
-    {
       "ts": 1785207646,
       "network_class": "clearnet",
       "candidates": 52851,
