@@ -4,6 +4,14 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-07-28 — IPv6 connectivity enabled at the vantage point
+
+- The observer VPS had no IPv6 route until this date, so all `ipv6` probes failed:
+  ipv6 reachability counts before 2026-07-28 ~07:00 UTC are 0 and reflect the
+  vantage point, not the network.
+- Measurement parameters are unchanged (`params_hash` is unaffected; this is a
+  vantage-point capability change, not a methodology change).
+
 ## 2026-07-26 — v0.1.0 initial parameters
 
 - clearnet: 15 min interval / 500 concurrent connections / 5 s connect and handshake timeouts
