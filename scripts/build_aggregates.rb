@@ -79,9 +79,11 @@ end
 latest_file = Dir.glob(File.join(DAILY_DIR, '**', '*.json')).max
 latest_daily = JSON.parse(File.read(latest_file))
 latest = { 'date' => latest_daily['date'], 'generated_at' => Time.now.to_i, 'networks' => {} }
+latest['observer'] = latest_daily['observer'] if latest_daily['observer']
 latest_daily['snapshots'].each do |s|
   latest['networks'][s['network_class']] = {
     'ts' => s['ts'],
+    'candidates' => s['candidates'],
     'instantaneous' => s['instantaneous'],
     'union_24h' => s['union_24h'],
     'by_network' => s['by_network'],

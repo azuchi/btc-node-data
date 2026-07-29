@@ -4,6 +4,13 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-07-29 — daily export: `observer` block added
+
+- The daily JSON now includes an `observer` object: addrman address counts per
+  network and the number of addresses currently in backoff, at export time.
+  Aggregate counts only; raw addresses are never published.
+- Reporting addition only — measurement parameters and `params_hash` are unchanged.
+
 ## 2026-07-28 — IPv6 connectivity enabled at the vantage point
 
 - The observer VPS had no IPv6 route until this date, so all `ipv6` probes failed:
