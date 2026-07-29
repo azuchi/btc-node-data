@@ -16,6 +16,13 @@
       "type": "object",
       "description": "The observer's own view at export time (vantage point, not the network). Aggregate counts only; raw addresses are never published",
       "properties": {
+        "candidate_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Active candidate address sources: addrman (observer node's address book) and/or harvest (recursive getaddr). Covered by params_hash"
+        },
         "addrman": {
           "type": "object",
           "additionalProperties": {

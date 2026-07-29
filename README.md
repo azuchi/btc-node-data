@@ -13,9 +13,14 @@ always state the methodology below alongside it.
 
 ### Collection method
 
-- Candidate addresses are taken from the observer node's (bitcoind) addrman via `getnodeaddresses 0`.
-  **This is "what is visible from our observer node", not full coverage of the network.**
-  No recursive getaddr crawling is performed.
+- Candidate addresses come from the sources listed in `observer.candidate_sources`
+  of each daily file (also covered by `params_hash`):
+  - `addrman` — the observer node's (bitcoind) address book via `getnodeaddresses 0`,
+    which a single node caps at roughly 82,000 entries.
+  - `harvest` — recursive `getaddr` discovery: reachable peers are asked for their
+    own address books once a day and the union is added to the candidate set.
+  **Even combined, this is "what is visible from our vantage point", not full
+  coverage of the network.**
 - For each candidate: TCP connect → send `version` → receive `version`/`verack` → disconnect
   immediately. No persistent connections.
 - The crawler's user agent is `/btc-node-observatory:0.1.0/`.

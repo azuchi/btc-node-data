@@ -4,6 +4,18 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-07-29 — candidate source widened: recursive getaddr (`harvest`)
+
+- **Methodology change — `params_hash` changes on this date.** Numbers before and
+  after are not directly comparable: reachability is now measured against a wider
+  candidate set, so counts step up.
+- Candidate sources are now `addrman` + `harvest`: in addition to the observer
+  node's address book (capped at roughly 82,000 entries), reachable peers are
+  asked for their own address books once a day (05:30 UTC) and the union is added
+  to the candidate set. Measurement itself — the version/verack handshake,
+  intervals, concurrency, timeouts, backoff — is unchanged.
+- The active sources of each day are published in `observer.candidate_sources`.
+
 ## 2026-07-29 — daily export: `observer` block added
 
 - The daily JSON now includes an `observer` object: addrman address counts per
