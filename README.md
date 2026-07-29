@@ -85,10 +85,6 @@ The data is published under [CC-BY 4.0](https://creativecommons.org/licenses/by/
 
 > btc-node-observatory contributors, "Bitcoin reachable node measurements", https://github.com/azuchi/btc-node-data
 
-When using KIT DSN data alongside, follow KIT's
-[citation guide](https://www.dsn.kastel.kit.edu/bitcoin/research.html#citation) and state the
-attribution.
-
 The `by_country` / `by_asn` breakdowns include GeoLite2 data created by MaxMind,
 available from [https://www.maxmind.com](https://www.maxmind.com).
 
