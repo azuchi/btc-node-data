@@ -1,1 +1,1 @@
-{"granularity":"year","resolution":"daily","generated_at":1785396943,"series":{"clearnet":[[1785196800,5768,6352,22722]],"onion":[[1785196800,235,235,18386]]}}
+{"granularity":"year","resolution":"daily","generated_at":1785402359,"series":{"clearnet":[[1785196800,5768,6352,22722],[1785283200,6520,7344,27007]],"onion":[[1785196800,235,235,18386],[1785283200,186,235,18387]]}}
