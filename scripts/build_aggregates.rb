@@ -73,7 +73,8 @@ RANGES.each do |granularity, (span, resolution)|
        out_series.map { |k, v| "#{k}=#{v.size}pts" }.join(' ')
 end
 
-# latest.json: the newest snapshot per network class with its full breakdowns
+# latest.json: the newest snapshot per network class with its full breakdowns,
+# plus the observer block (candidate sources and known-address counts)
 # (by_country / by_asn / by_user_agent), for the dashboard's map and ranking
 # views. Time-series files above stay lean; detail lives only here.
 latest_file = Dir.glob(File.join(DAILY_DIR, '**', '*.json')).max

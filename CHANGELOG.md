@@ -4,6 +4,13 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-07-30 — daily export: `observer.addrman` renamed to `observer.known_addresses`
+
+- The field counts addresses from **all** candidate sources, not just the addrman,
+  so the old name became misleading once `harvest` was enabled. Values and meaning
+  are unchanged; only the key name differs.
+- Reporting rename only — measurement parameters and `params_hash` are unchanged.
+
 ## 2026-07-29 — candidate source widened: recursive getaddr (`harvest`)
 
 - **Methodology change — `params_hash` changes on this date.** Numbers before and

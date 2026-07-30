@@ -23,12 +23,12 @@
           },
           "description": "Active candidate address sources: addrman (observer node's address book) and/or harvest (recursive getaddr). Covered by params_hash"
         },
-        "addrman": {
+        "known_addresses": {
           "type": "object",
           "additionalProperties": {
             "type": "integer"
           },
-          "description": "Known addresses per network in the observer's addrman mirror"
+          "description": "Addresses known to the observer per network, across all candidate sources"
         },
         "backed_off": {
           "type": "object",
