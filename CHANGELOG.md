@@ -4,6 +4,19 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-07-31 — onion measurement capacity: 1 → 3 Tor daemons
+
+- **Methodology change — the onion `params_hash` changes on this date.** Onion
+  counts before and after are not directly comparable.
+- Probes are now spread round-robin across three dedicated Tor daemons
+  (concurrency 50 → 90). A single daemon's circuit-building queue, not the
+  network, was the limit: reachable onion nodes went from ~190 to ~320 and the
+  crawl finished in 2h instead of 3h15m.
+- Even so, 98% of onion probes still end in `timeout`, so **onion counts remain a
+  capacity-limited lower bound** — they describe what our Tor capacity can
+  confirm, not how many onion nodes exist. The number of Tor daemons is part of
+  `params_hash` for exactly this reason.
+
 ## 2026-07-30 — daily export: `observer.addrman` renamed to `observer.known_addresses`
 
 - The field counts addresses from **all** candidate sources, not just the addrman,

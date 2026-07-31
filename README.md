@@ -32,10 +32,10 @@ always state the methodology below alongside it.
 | Item | clearnet | onion |
 |---|---|---|
 | Interval | 15 min | once a day |
-| Concurrent connections | 500 | 50 |
+| Concurrent connections | 500 | 90 |
 | Connect timeout | 5 s | 30 s |
 | Handshake timeout | 5 s | 30 s |
-| Route | direct | SOCKS5 of a dedicated Tor daemon |
+| Route | direct | SOCKS5, round-robin over 3 dedicated Tor daemons |
 
 - Candidate set limit: 100,000 (mitigation against ADDR gossip pollution)
 - Addresses that fail 30 times in a row are probed with exponential backoff
@@ -65,6 +65,13 @@ Onion absolute counts must not be treated as authoritative numbers.
 - One node can run multiple onion services, so **address count ≠ host count**.
 - There is no IP or ASN, so no cross-checking is possible.
 - Generating onion addresses is free and unlimited, so the cost of creating Sybils is extremely low.
+- **The count is limited by our Tor capacity, not by the network.** 98% of onion
+  probes end in `timeout` because building a rendezvous circuit per address is
+  slow: tripling the number of Tor daemons (2026-07-31) raised the count from
+  ~190 to ~320 without the network changing. Read the onion figure as "what our
+  Tor capacity could confirm on that day", and treat any change in the number of
+  daemons (recorded in the CHANGELOG, and part of `params_hash`) as a break in
+  the series.
 
 Therefore treat the onion series primarily as **trends in ratios**; absolute numbers are
 indicative only.
