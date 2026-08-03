@@ -4,6 +4,20 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-03 — onion timeouts raised from 30 s to 90 s
+
+- **Methodology change — the onion `params_hash` changes on this date.** Onion
+  counts step up again and are not directly comparable across this date.
+- A controlled re-probe settled why 98% of onion probes timed out. Taking 500
+  addresses that had just timed out and re-probing them without contention
+  (10 concurrent, 120 s) resolved almost all of them: **49% completed a
+  handshake**, a further 44% returned a definite "unreachable"/"refused", and
+  only 0.8% timed out again. The addresses were not dead — 30 s simply cut the
+  probes off before Tor could finish building a rendezvous circuit.
+- Timeouts are therefore 90 s (concurrency unchanged at 90). A round takes
+  roughly `candidates * timeout / concurrency`, so the crawl now runs about
+  6 hours instead of 2. The published onion figure remains a lower bound.
+
 ## 2026-07-31 — onion measurement capacity: 1 → 3 Tor daemons
 
 - **Methodology change — the onion `params_hash` changes on this date.** Onion

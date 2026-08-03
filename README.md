@@ -33,8 +33,8 @@ always state the methodology below alongside it.
 |---|---|---|
 | Interval | 15 min | once a day |
 | Concurrent connections | 500 | 90 |
-| Connect timeout | 5 s | 30 s |
-| Handshake timeout | 5 s | 30 s |
+| Connect timeout | 5 s | 90 s |
+| Handshake timeout | 5 s | 90 s |
 | Route | direct | SOCKS5, round-robin over 3 dedicated Tor daemons |
 
 - Candidate set limit: 100,000 (mitigation against ADDR gossip pollution)
