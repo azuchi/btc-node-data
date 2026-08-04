@@ -65,13 +65,16 @@ Onion absolute counts must not be treated as authoritative numbers.
 - One node can run multiple onion services, so **address count ≠ host count**.
 - There is no IP or ASN, so no cross-checking is possible.
 - Generating onion addresses is free and unlimited, so the cost of creating Sybils is extremely low.
-- **The count is limited by our Tor capacity, not by the network.** 98% of onion
-  probes end in `timeout` because building a rendezvous circuit per address is
-  slow: tripling the number of Tor daemons (2026-07-31) raised the count from
-  ~190 to ~320 without the network changing. Read the onion figure as "what our
-  Tor capacity could confirm on that day", and treat any change in the number of
-  daemons (recorded in the CHANGELOG, and part of `params_hash`) as a break in
-  the series.
+- **The count is bounded by our Tor capacity, not by the network.** Building a
+  rendezvous circuit per address is slow, so a probe that is cut off early is
+  indistinguishable from a dead address. Both changes we have made to that budget
+  moved the number by roughly an order of magnitude while the network itself stayed
+  the same: tripling the Tor daemons (2026-07-31) took it from ~190 to ~320, and
+  raising the timeouts from 30 s to 90 s (2026-08-03) took it from 691 to 7,935.
+  29% of probes still end in `timeout`, so the figure is still a lower bound. Read
+  it as "what our Tor capacity could confirm on that day", and treat any change to
+  the number of daemons or the timeouts (recorded in the CHANGELOG, and part of
+  `params_hash`) as a break in the series.
 
 Therefore treat the onion series primarily as **trends in ratios**; absolute numbers are
 indicative only.

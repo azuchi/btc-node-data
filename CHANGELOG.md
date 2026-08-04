@@ -14,9 +14,13 @@ History of changes to parameters that affect the measurement methodology.
   handshake**, a further 44% returned a definite "unreachable"/"refused", and
   only 0.8% timed out again. The addresses were not dead — 30 s simply cut the
   probes off before Tor could finish building a rendezvous circuit.
-- Timeouts are therefore 90 s (concurrency unchanged at 90). A round takes
-  roughly `candidates * timeout / concurrency`, so the crawl now runs about
-  6 hours instead of 2. The published onion figure remains a lower bound.
+- Timeouts are therefore 90 s (concurrency unchanged at 90). The first round under
+  the new parameters (2026-08-04, 23,416 candidates) confirmed the diagnosis:
+  **timeouts fell from 98% to 29% of probes, and the reachable count went from 691
+  to 7,935.** The round took 2h54m rather than the 6h a fully saturated crawl would
+  imply, because most probes now resolve one way or the other before the limit.
+- The published onion figure is still a lower bound — 29% of probes remain
+  unresolved — but a far less severe one than before this date.
 
 ## 2026-07-31 — onion measurement capacity: 1 → 3 Tor daemons
 
