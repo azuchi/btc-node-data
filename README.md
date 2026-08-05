@@ -42,6 +42,11 @@ always state the methodology below alongside it.
   (900 s × 2^n, capped at 2^10). **They are never removed.**
 - `by_country` / `by_asn` / `by_user_agent` in the daily JSON are the top 20 entries + `other`.
 
+A change of `params_hash` is a reliable signal that *something* changed, but not
+proof that the measurement did: the hash also changes when a new field is added to
+its definition. Every hash change — parameter or definition — is explained in the
+CHANGELOG, so check there before treating one as a break in the series.
+
 ### Dual definition of reachability
 
 | Metric | Definition | Corresponds to |

@@ -35,6 +35,19 @@ History of changes to parameters that affect the measurement methodology.
   confirm, not how many onion nodes exist. The number of Tor daemons is part of
   `params_hash` for exactly this reason.
 
+## 2026-07-31 — clearnet `params_hash` changed without a methodology change
+
+- On this date the clearnet `params_hash` goes from `eb15fb66` to `08bba3be`.
+  **This is not a break in the clearnet series** — the measurement is unchanged
+  (15 min / 500 concurrent / 5 s timeouts / same candidate sources and backoff).
+- The cause is the entry above: `socks5_instances` was added to the set of fields
+  the hash is computed over. For clearnet its value is always 0, but adding the
+  field changes the hash input, so every network's hash was recomputed.
+- Treat clearnet data from 2026-07-29 (when `harvest` was enabled) onward as one
+  continuous series across this hash change. Whenever the *definition* of
+  `params_hash` changes rather than a parameter, it will be recorded here the
+  same way.
+
 ## 2026-07-30 — daily export: `observer.addrman` renamed to `observer.known_addresses`
 
 - The field counts addresses from **all** candidate sources, not just the addrman,
