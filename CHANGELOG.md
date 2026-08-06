@@ -4,6 +4,20 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-04 — data quality: Tor daemons crashed mid-round (2 rounds)
+
+- The onion rounds of 2026-08-04 (7,935) and 2026-08-05 (10,225) were measured
+  while all three Tor daemons aborted partway through and restarted. The cause
+  was `MaxMemInQueues 96 MB`, below the descriptor cache a round of this size
+  builds; the daemons hit the ceiling and aborted on a conflux assertion.
+- **Parameters and `params_hash` are unchanged** — this is not a methodology
+  change, and the figures are not invalid. But the crash time was coupled to how
+  well the round was going, so these two days are not directly comparable with
+  each other or with later ones.
+- Fixed on 2026-08-05: `MaxMemInQueues 256 MB`, `ConfluxEnabled 0`, and all
+  three daemons are restarted before each round so every round starts from an
+  empty descriptor cache. The first clean round (2026-08-06) returned 11,015.
+
 ## 2026-08-03 — onion timeouts raised from 30 s to 90 s
 
 - **Methodology change — the onion `params_hash` changes on this date.** Onion

@@ -76,10 +76,10 @@ Onion absolute counts must not be treated as authoritative numbers.
   moved the number by roughly an order of magnitude while the network itself stayed
   the same: tripling the Tor daemons (2026-07-31) took it from ~190 to ~320, and
   raising the timeouts from 30 s to 90 s (2026-08-03) took it from 691 to 7,935.
-  29% of probes still end in `timeout`, so the figure is still a lower bound. Read
-  it as "what our Tor capacity could confirm on that day", and treat any change to
-  the number of daemons or the timeouts (recorded in the CHANGELOG, and part of
-  `params_hash`) as a break in the series.
+  Roughly 19% of probes still end in `timeout`, so the figure is still a lower
+  bound. Read it as "what our Tor capacity could confirm on that day", and treat
+  any change to the number of daemons or the timeouts (recorded in the CHANGELOG,
+  and part of `params_hash`) as a break in the series.
 
 Therefore treat the onion series primarily as **trends in ratios**; absolute numbers are
 indicative only.
