@@ -4,6 +4,33 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-07 — bug fix: addresses in the addrman were permanently excluded from probing
+
+- **`params_hash` does not change on this date, but what is measured does.** The
+  backoff parameters are identical; the bug was in how they were applied. This is
+  the case the hash cannot signal, so it is recorded here instead.
+- Backoff decided when to re-probe an address from `last_seen`, but the observer
+  node's address book is re-imported every 15 minutes and that import rewrote
+  `last_seen` to the current time for every address it contained. The backoff
+  interval could therefore never elapse for any address still in the address
+  book: once such an address failed 30 times in a row it was **never probed
+  again**, instead of returning on the published 900 s × 2^n schedule.
+- 46,123 clearnet addresses were in that state, 524 of which had completed a
+  handshake at some point and 296 within the previous week. The effect ratchets:
+  any node that stays offline for 7.5 h (30 rounds) joins the excluded set and
+  does not come back when it recovers. **Clearnet counts up to and including
+  2026-08-06 are therefore an undercount that grows slowly over time**, masked so
+  far by the candidate set expanding faster than the exclusion accumulated.
+- Fixed by tracking the last probe time separately from `last_seen`. The ~97k
+  addresses that were overdue are returned to the rotation gradually over the 24 h
+  following the fix, rather than all at once. If clearnet `instantaneous` rises
+  over 2026-08-07/08-08, read that as recovering addresses that were being missed,
+  not as the network growing. The first round after the fix probed 5,058 more
+  addresses and found none of them reachable, so the correction may well turn out
+  to be small — most of what was excluded is genuinely dead.
+- onion was not affected. Its rounds are daily, so no onion address had yet
+  reached 30 consecutive failures — see the entry below, which still applies.
+
 ## 2026-08-06 — advance notice: onion candidate counts will start falling ~2026-09-01
 
 - No parameter changes; `params_hash` is unaffected. This is a heads-up about a
