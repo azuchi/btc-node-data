@@ -37,9 +37,20 @@ always state the methodology below alongside it.
 | Handshake timeout | 5 s | 90 s |
 | Route | direct | SOCKS5, round-robin over 3 dedicated Tor daemons |
 
-- Candidate set limit: 100,000 (mitigation against ADDR gossip pollution)
 - Addresses that fail 30 times in a row are probed with exponential backoff
-  (900 s × 2^n, capped at 2^10). **They are never removed.**
+  (900 s × 2^n, capped at 2^10). **They are never removed**, so the address set
+  the observer knows about grows without bound (320,538 as of 2026-08-06); what
+  backoff limits is how often each address is probed, not how many are kept.
+- Candidate limit: 100,000 **per round**. This is a cap on how many addresses one
+  round probes, applied after backoff selection — it is not a cap on the address
+  set. If it ever binds, addresses that have never completed a handshake are
+  dropped first. It has never bound: the highest any round has reached is 85,749
+  (2026-07-30), and the figure has been falling since as older addresses move to
+  longer backoff intervals. `candidates` in each snapshot is the actual number.
+- Because backoff releases addresses in cohorts, `candidates` swings widely
+  within a day — on 2026-08-05 it ranged from 8,671 to 47,516. A snapshot's
+  reachable count should be read against its own `candidates`, not against a
+  daily average.
 - `by_country` / `by_asn` / `by_user_agent` in the daily JSON are the top 20 entries + `other`.
 
 A change of `params_hash` is a reliable signal that *something* changed, but not

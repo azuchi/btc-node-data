@@ -4,6 +4,29 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-06 — advance notice: onion candidate counts will start falling ~2026-09-01
+
+- No parameter changes; `params_hash` is unaffected. This is a heads-up about a
+  scheduled effect of the existing backoff rule, so it is not misread as a change
+  in the network.
+- Backoff has never yet removed an onion address from a round. It applies after
+  30 consecutive failures, but the interval only starts at 900 s × 2^0, and an
+  address is skipped only once that interval exceeds the 24 h onion round — i.e.
+  at 37 consecutive failures, not 30. The oldest onion failure streak is 11 as of
+  2026-08-06, so **every known onion address is still probed every round**, and
+  `candidates` equals the full onion address set.
+- From roughly 2026-09-01 the longest-failing addresses begin skipping rounds, and
+  the share skipped grows as intervals keep doubling (capped at 900 s × 2^10 ≈
+  10.6 days). About 13,000 of the 24,926 known onion addresses have never
+  completed a handshake and are the ones affected.
+- Expect `candidates` to fall, round duration to shorten, and the success *rate*
+  to rise — none of which mean the onion network changed. `instantaneous` should
+  be largely unaffected, since the addresses dropping out are ones that have never
+  been reachable. Compare `instantaneous` across this period, not the rate.
+- clearnet has been in this regime since the start (900 s rounds, so backoff bites
+  at 31 failures), which is why its `candidates` already swings between roughly
+  8,700 and 47,500 within a day as cohorts are released.
+
 ## 2026-08-04 — data quality: Tor daemons crashed mid-round (2 rounds)
 
 - The onion rounds of 2026-08-04 (7,935) and 2026-08-05 (10,225) were measured
