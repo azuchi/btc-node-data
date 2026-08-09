@@ -4,6 +4,21 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-09 — no onion data point on this date
+
+- **The 2026-08-09 daily file has no onion snapshot.** The round ran normally for
+  3h52m and probed all 25,897 candidates; it was the write to storage that
+  failed, on a lock held by the concurrent clearnet round and address import for
+  five unbroken minutes. The results were never persisted and are not
+  recoverable.
+- **This is a gap, not a zero, and not a network event.** Nothing is known about
+  onion reachability on 2026-08-09 either way. Do not interpolate across it
+  without saying so; onion counts had been 11,015 / 11,407 / 11,173 on the three
+  preceding days.
+- clearnet is unaffected — all 96 snapshots for the day were recorded.
+- The timeout that expired has been raised and the write is now retried, so a
+  round is no longer discarded for losing a race it could have waited out.
+
 ## 2026-08-07 — bug fix: addresses in the addrman were permanently excluded from probing
 
 - **`params_hash` does not change on this date, but what is measured does.** The
