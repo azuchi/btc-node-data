@@ -18,6 +18,18 @@ History of changes to parameters that affect the measurement methodology.
 - clearnet is unaffected — all 96 snapshots for the day were recorded.
 - The timeout that expired has been raised and the write is now retried, so a
   round is no longer discarded for losing a race it could have waited out.
+- A replacement round was run the same day and then **deliberately excluded from
+  the series**. It ran 07:49–12:00 UTC instead of the usual 02:30, and returned
+  **9,719 reachable of 26,256 candidates (37.0%)**. Two reasons not to publish it
+  as the 2026-08-09 point: the measurement time is part of the fixed methodology
+  and this one is five hours off it, and having two onion rounds inside one 24 h
+  window made the *following* day's `union_24h` a union of both (11,912 against
+  an instantaneous 10,535), which is not comparable with any other day. Its
+  observations are archived on the observer and available on request.
+- For scale, the scheduled rounds either side were 11,173 (2026-08-08, 43.8%) and
+  10,535 (2026-08-10, 40.1%), so the off-schedule figure sits about 10% below
+  what interpolation would suggest. Whether that gap is the time of day or the
+  measurement conditions is not something one round can settle.
 
 ## 2026-08-07 — bug fix: addresses in the addrman were permanently excluded from probing
 
