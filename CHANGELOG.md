@@ -15,7 +15,11 @@ History of changes to parameters that affect the measurement methodology.
   onion reachability on 2026-08-09 either way. Do not interpolate across it
   without saying so; onion counts had been 11,015 / 11,407 / 11,173 on the three
   preceding days.
-- clearnet is unaffected — all 96 snapshots for the day were recorded.
+- **clearnet has 95 snapshots for this day rather than the usual 96.** The 05:45
+  round was lost to the same lock: the daily harvest import held it from 05:31 to
+  05:47, which killed first the round's address import and then the round itself.
+  Aggregates for 2026-08-09 are therefore an average over 95 rounds; the missing
+  one is 05:45–06:00 UTC.
 - The timeout that expired has been raised and the write is now retried, so a
   round is no longer discarded for losing a race it could have waited out.
 - A replacement round was run the same day and then **deliberately excluded from
