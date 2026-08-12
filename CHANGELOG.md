@@ -59,6 +59,19 @@ History of changes to parameters that affect the measurement methodology.
   not as the network growing. The first round after the fix probed 5,058 more
   addresses and found none of them reachable, so the correction may well turn out
   to be small — most of what was excluded is genuinely dead.
+- **`union_24h` is affected more than `instantaneous`, so the ratio between them
+  shifts across this date.** Daily means for clearnet went from 8,440 /
+  9,012 on 2026-08-06 to 8,836 / 9,615 on 2026-08-10: `instantaneous` +4.7%,
+  `union_24h` +6.7%. The addresses that came back into rotation are mostly nodes
+  that are up intermittently, which show up somewhere in a 24 h union far more
+  readily than in any single round.
+- The consequence is that `instantaneous / union_24h` — the churn indicator
+  described in the README — **steps down across this date for reasons that have
+  nothing to do with churn**. It sat between 0.936 and 0.945 for 2026-08-01 to
+  08-06 and between 0.915 and 0.919 for 2026-08-09 to 08-10, with 08-07 and 08-08
+  in transition as the backlog was released. Do not read that step as the network
+  becoming less stable. Comparisons of this ratio across 2026-08-07 are not valid;
+  within either period they are.
 - onion was not affected. Its rounds are daily, so no onion address had yet
   reached 30 consecutive failures — see the entry below, which still applies.
 
