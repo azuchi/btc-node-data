@@ -35,57 +35,67 @@ History of changes to parameters that affect the measurement methodology.
   what interpolation would suggest. Whether that gap is the time of day or the
   measurement conditions is not something one round can settle.
 
-## 2026-08-08 — measurement capacity started falling; onion counts after this date are not comparable with those before
+## 2026-08-08 — failure reasons are reclassified from this date; `timeout` and `unreachable` are not comparable across it
 
+- **Revised on 2026-08-18.** The version of this entry published on 2026-08-14
+  said that measurement capacity was falling and that onion `instantaneous` had
+  dropped from ~11,400 to ~10,600. The second claim was wrong and is withdrawn:
+  the count recovered and then exceeded its previous high (12,045 on 08-17). It
+  was drawn from six days of a series whose seventh day contradicted it. What
+  follows is what the data supports.
 - **No parameter changed, so `params_hash` does not change on this date.** The
-  Tor daemon count, the timeouts and the concurrency are all as they were. What
-  changed is that the observer stopped being able to keep up with its own
-  candidate set, which the hash cannot express — the same category as the
-  2026-08-07 entry below.
-- The timeout share is the clearest signal. It had been falling as the candidate
-  set grew, then roughly doubled in a single round and stayed high:
+  Tor daemon count, the timeouts and the concurrency are all as they were — this
+  is the category the hash cannot signal, like the 2026-08-07 entry below.
+- What changed is which bucket a failed onion probe lands in. `timeout` and
+  `unreachable` traded places in a single round and have stayed swapped:
 
-  | Round | Candidates | Reachable | Timeout share | Duration |
-  |---|---|---|---|---|
-  | 2026-08-06 | 24,497 | 11,015 | 19.4% | 2h52m |
-  | 2026-08-07 | 24,930 | 11,407 | 18.5% | 2h55m |
-  | 2026-08-08 | 25,496 | 11,173 | 34.2% | 3h43m |
-  | 2026-08-10 | 26,297 | 10,535 | 37.3% | 4h02m |
-  | 2026-08-11 | 26,602 |  9,934 | 43.8% | 4h39m |
-  | 2026-08-12 | 26,937 | 10,519 | 38.0% | 4h09m |
-  | 2026-08-13 | 27,401 | 10,634 | 39.4% | 4h17m |
+  | Round | Candidates | Reachable | Success | `timeout` | `unreachable` | Duration |
+  |---|---|---|---|---|---|---|
+  | 2026-08-06 | 24,497 | 11,015 | 45.0% | 19.4% | 24.7% | 2h52m |
+  | 2026-08-07 | 24,930 | 11,407 | 45.8% | 18.5% | 24.6% | 2h55m |
+  | 2026-08-08 | 25,496 | 11,173 | 43.8% | 34.2% | 14.8% | 3h43m |
+  | 2026-08-10 | 26,297 | 10,535 | 40.1% | 37.3% | 14.9% | 4h02m |
+  | 2026-08-11 | 26,602 |  9,934 | 37.3% | 43.8% | 11.2% | 4h39m |
+  | 2026-08-12 | 26,937 | 10,519 | 39.1% | 38.0% | 14.6% | 4h09m |
+  | 2026-08-13 | 27,401 | 10,634 | 38.8% | 39.4% | 14.5% | 4h17m |
+  | 2026-08-14 | 27,966 | 10,547 | 37.7% | 30.7% | 21.1% | 4h09m |
+  | 2026-08-15 | 28,413 | 11,329 | 39.9% | 37.1% | 15.7% | 4h20m |
+  | 2026-08-16 | 28,874 | 11,869 | 41.1% | 32.7% | 17.9% | 4h14m |
+  | 2026-08-17 | 29,181 | 12,045 | 41.3% | 33.8% | 16.9% | 4h19m |
 
-- What demonstrably changed is the observer, which has one CPU core and 961 MB of
-  RAM. Peak swap per Tor daemon went from under 10 MB in the 2026-08-07 round to
-  125–165 MB from the 2026-08-08 round onward, and rounds have run at 74–98% of
-  the single core throughout. Candidates grew about 10% over the same week, so
-  the load rose against a fixed ceiling. A probe that is cut short by a saturated
-  observer is recorded as `timeout`, which is indistinguishable from a dead
-  address.
-- **Consequently, the drop in onion `instantaneous` from ~11,400 to ~10,600 over
-  this period is not evidence that the onion network shrank.** It may be partly
-  real; nothing here separates the two. Do not read the post-08-08 onion series as
-  a network trend, and do not compare its absolute counts with the 08-04..08-07
-  rounds, which were measured by an observer that was keeping up.
-- A reboot on 2026-08-12 ruled out one explanation: swap rebuilt to the same
-  125–139 MB per daemon on the first round from a clean boot, so this is the
-  steady-state cost of the workload rather than anything that accumulated over
-  uptime. It will not recover on its own while the candidate set keeps growing.
-- What should separate the two causes: from roughly 2026-09-01, backoff begins
-  removing the longest-failing onion addresses from rounds (see the 2026-08-06
-  entry). Those addresses have never completed a handshake, so `instantaneous`
-  should be nearly unaffected while candidates and load fall. If the timeout share
-  drops and the reachable count recovers, the decline recorded here was the
-  observer. If it does not, more of it was the network.
-- **clearnet does not show this degradation, but it is not isolated from it
-  either.** It shares the single core, and its rounds run measurably longer while
-  the onion round is in progress — 140 s against 104 s elsewhere in the day on
-  2026-08-11, 189 s against 130 s on 08-14. What it does not show is the failure
-  mode above: its timeout share fell across this date rather than rising (46.3% on
-  08-07 to 40.0% on 08-13) and its rounds got shorter overall. clearnet probes are
-  direct with a 5 s budget, so they do not depend on building a rendezvous circuit
-  under contention, which is the part that saturates. Treat the clearnet series as
-  continuous across this date; the contention costs it time, not measurements.
+- The cause is the observer, which has one CPU core and 961 MB of RAM. Peak swap
+  per Tor daemon went from under 10 MB in the 2026-08-07 round to 120–165 MB from
+  the 2026-08-08 round onward and has stayed there, and rounds run at 74–98% of
+  the single core. A slower observer does not fail to reach a node it would
+  otherwise have reached; it fails to finish *classifying* the ones it cannot
+  reach. Probes that used to return a definite "unreachable" inside the 90 s
+  budget now exhaust it and are recorded as `timeout` instead.
+- **What this invalidates:** any comparison of `by_fail_reason` across this date,
+  and in particular reading the rise in `timeout` as onion nodes becoming slower
+  or less responsive. The 2026-08-03 entry's framing — that `timeout` share
+  indicates how much of the network our Tor capacity fails to confirm — is only
+  valid within a period of stable observer load.
+- **What this does not invalidate:** the reachable counts. `instantaneous` has
+  risen more or less steadily since 2026-08-11 and set a new high on 08-17, while
+  the observer stayed just as saturated. Do not read the elevated `timeout` share
+  as a suppressed node count.
+- Success *rate* and success *count* move in opposite directions here and should
+  not be substituted for one another. The rate fell from 45.8% to 41.3% because
+  the candidate set grew 17% over the period while reachable grew 6%; both
+  statements are true and describe different things. Most of the added candidates
+  are addresses that have never completed a handshake.
+- The test from the 2026-08-06 entry still applies. From roughly 2026-09-01,
+  backoff begins skipping the longest-failing onion addresses, which will cut
+  candidates and therefore load. If the observer is the reason `timeout` and
+  `unreachable` are swapped, that swap should partly unwind as rounds get
+  shorter, with no matching change in `instantaneous`.
+- **clearnet is not affected by the reclassification, but it is not isolated from
+  the load either.** Its rounds run measurably longer while the onion round is in
+  progress — 140 s against 104 s elsewhere in the day on 2026-08-11, 189 s against
+  130 s on 08-14. Its own timeout share fell across this date rather than rising
+  (46.3% on 08-07 to 40.0% on 08-13). clearnet probes are direct with a 5 s
+  budget, so they do not wait on a rendezvous circuit, which is the part that
+  degrades. Treat the clearnet series as continuous across this date.
 
 ## 2026-08-07 — bug fix: addresses in the addrman were permanently excluded from probing
 

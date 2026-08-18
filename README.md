@@ -106,13 +106,16 @@ Onion absolute counts must not be treated as authoritative numbers.
   Read it as "what our Tor capacity could confirm on that day", and treat any
   change to the number of daemons or the timeouts (recorded in the CHANGELOG, and
   part of `params_hash`) as a break in the series.
-- **That capacity is not constant, and it has been falling since 2026-08-08.**
-  The timeout share was 18.5% on 2026-08-07 and 39.4% on 2026-08-13; the observer
-  now runs out of CPU and memory before it runs out of candidates. Because no
-  parameter changed, `params_hash` does not mark this. See the 2026-08-08 entry in
-  the [CHANGELOG](CHANGELOG.md) before comparing onion counts across that date —
-  the decline in onion `instantaneous` after it is not evidence that the onion
-  network shrank.
+- **How a failed probe is classified depends on how loaded the observer is, and
+  that changed on 2026-08-08.** `timeout` went from 18.5% to 34.2% of onion probes
+  in a single round while `unreachable` fell from 24.6% to 14.8%; the two traded
+  places and have stayed swapped. A saturated observer does not miss nodes it
+  would otherwise reach — it runs out of time deciding about the ones it cannot.
+  No parameter changed, so `params_hash` does not mark this. **Do not compare
+  `by_fail_reason` across that date**, and do not read the higher `timeout` share
+  as a suppressed node count: onion `instantaneous` set a new high on 2026-08-17
+  with the observer just as saturated. See the 2026-08-08 entry in the
+  [CHANGELOG](CHANGELOG.md).
 
 Therefore treat the onion series primarily as **trends in ratios**; absolute numbers are
 indicative only.
