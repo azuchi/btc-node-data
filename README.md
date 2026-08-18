@@ -52,6 +52,13 @@ always state the methodology below alongside it.
   reachable count should be read against its own `candidates`, not against a
   daily average.
 - `by_country` / `by_asn` / `by_user_agent` in the daily JSON are the top 20 entries + `other`.
+- `by_fail_reason` (from the 2026-08-17 daily file) counts the probes that did **not** complete a
+  handshake, split into `timeout` / `refused` / `unreachable` / `handshake_error`.
+  It is complete rather than top-N, so `instantaneous` plus these counts equals
+  `candidates` — every probed address is accounted for. Read it alongside the
+  CHANGELOG: the boundary between `timeout` and the definite reasons moves with
+  how loaded the observer is, so it measures our own capacity as much as the
+  network's behaviour.
 
 A change of `params_hash` is a reliable signal that *something* changed, but not
 proof that the measurement did: the hash also changes when a new field is added to

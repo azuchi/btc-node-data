@@ -4,6 +4,30 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-08-18 — daily export: `by_fail_reason` added
+
+- Each snapshot now publishes the probes that did not complete a handshake,
+  split into `timeout` / `refused` / `unreachable` / `handshake_error`.
+- **Reporting addition only — measurement parameters and `params_hash` are
+  unchanged.** Nothing about how probes are made or classified has changed; this
+  data was always recorded, just not exported.
+- Unlike `by_country` / `by_asn` / `by_user_agent` it is **not** truncated to a
+  top N. The reason set is closed and small, and the split between the reasons is
+  the whole point of the field. `instantaneous` plus these counts equals
+  `candidates`, so a consumer can check that every probed address is accounted
+  for.
+- The reason it exists: the entries for 2026-08-08 and 2026-08-03 both turn on
+  the share of probes that time out, and until now that figure could not be
+  derived from the published data — it had to be quoted from the observer's own
+  database, and quoted figures went stale. With this field those claims are
+  checkable, and so is any future one.
+- **The first daily file carrying it is 2026-08-17**, which is exported on
+  2026-08-18. The field is absent, not zero, in every earlier file, and
+  `schema/daily.json` does not mark it required for that reason.
+- Note that the boundary between `timeout` and the definite reasons depends on the
+  observer's load, so this field is not comparable across the dates recorded in
+  this file — see the 2026-08-08 entry.
+
 ## 2026-08-09 — no onion data point on this date
 
 - **The 2026-08-09 daily file has no onion snapshot.** The round ran normally for

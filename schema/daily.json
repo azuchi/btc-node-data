@@ -77,6 +77,22 @@
             "type": "integer",
             "description": "Union of nodes with at least one success in the 24 hours preceding ts (KIT-style)"
           },
+          "by_fail_reason": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "propertyNames": {
+              "enum": [
+                "timeout",
+                "refused",
+                "unreachable",
+                "handshake_error",
+                "unknown"
+              ]
+            },
+            "description": "Probes that did not complete a handshake, by reason. Complete, never truncated to top N: instantaneous plus these counts equals candidates. Present from the 2026-08-17 daily file onward (exported 2026-08-18); earlier files omit it. The split between timeout and the definite reasons depends on how loaded the observer was, so it is not comparable across the dates recorded in the CHANGELOG"
+          },
           "by_network": {
             "type": "object",
             "additionalProperties": {
