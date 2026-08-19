@@ -87,6 +87,9 @@ latest_daily['snapshots'].each do |s|
     'candidates' => s['candidates'],
     'instantaneous' => s['instantaneous'],
     'union_24h' => s['union_24h'],
+    # Absent from daily files before 2026-08-17, so compact drops it there
+    # rather than publishing an empty object that would read as "no failures".
+    'by_fail_reason' => s['by_fail_reason'],
     'by_network' => s['by_network'],
     'by_country' => s['by_country'],
     'by_asn' => s['by_asn'],
