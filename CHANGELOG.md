@@ -4,6 +4,124 @@ History of changes to parameters that affect the measurement methodology.
 **Always record them with dates.**
 (Also machine-detectable via the `params_hash` of each snapshot.)
 
+## 2026-11-17 — onion counts from 2026-11-11 are observer-limited and are not a population measurement
+
+- **No parameter changed, so `params_hash` is unchanged on these dates.** As with
+  the 2026-08-08 entry, this is the category the hash cannot signal: what changed
+  is how many probes the observer's Tor client can resolve at all.
+- Onion `instantaneous` fell from 9,030 on 2026-11-10 to **2,821 on 2026-11-13**,
+  the lowest figure in the series, and has not recovered since:
+
+  | Date | Candidates | `instantaneous` | Success | `timeout` | `unreachable` | `host.cpu_idle_pct` | Duration |
+  |---|---|---|---|---|---|---|---|
+  | 2026-11-10 | 17,881 | 9,030 | 50.5% | 5,530 | 2,282 | 1.22 | 2h26m |
+  | 2026-11-11 | 17,982 | 8,423 | 46.8% | 8,257 | 327 | 4.71 | 2h59m |
+  | 2026-11-12 | 18,550 | 7,270 | 39.2% | 10,197 | 124 | 16.67 | 3h40m |
+  | 2026-11-13 | 18,395 | 2,821 | 15.3% | 14,688 | 15 | 38.41 | 4h34m |
+  | 2026-11-14 | 18,425 | 4,253 | 23.1% | 13,188 | 73 | 30.13 | 4h07m |
+  | 2026-11-15 | 18,535 | 5,426 | 29.3% | 12,100 | 60 | 30.31 | 4h03m |
+  | 2026-11-16 | 18,518 | 4,107 | 22.2% | 13,422 | 24 | 30.35 | 4h24m |
+
+  (The 2026-11-16 file is exported on 2026-11-17; the figures above are the ones
+  it carries.)
+- **The signature is a lookup that never resolves, not a node that is gone.**
+  `unreachable` — the bucket a probe lands in when Tor answers definitively that
+  it cannot find the service — collapses from 2,282 to 24, while `timeout` grows
+  to 13,422. Over the same rounds `host.cpu_idle_pct` rises from 1.22 to above 30,
+  so the observer was **idle, not saturated**: probes sat waiting on Tor and the
+  90 s limit expired before Tor could answer either way. Round duration grows for
+  the same reason, from 2h26m to 4h24m.
+- **clearnet over the same days is unaffected in absolute terms.** Reachable
+  clearnet nodes per day went from 736,965 (2026-11-10, 96 rounds) to 780,195
+  (2026-11-16); the success *rate* falls only because `candidates` grew from
+  990,082 to 1,347,070 per day. Whatever this is, it is specific to the
+  hidden-service path, not to the vantage point's connectivity.
+- **An independent crawler does not see the fall.** Bitnodes' snapshot of
+  2026-11-17 04:24 UTC counts **10,035 onion addresses among 20,907 reachable
+  nodes**, and its hourly totals across 2026-11-16/17 range 17,827–20,907 with no
+  downward trend. Our own figure for 2026-11-16 is 4,107. The two methodologies
+  differ in crawl interval, candidate sourcing and Tor setup, so they are not
+  expected to agree closely — but a factor of two does not follow from that, and
+  before this period our onion counts ran at or above theirs.
+- On a fixed set of addresses the loss is smaller than the published series
+  suggests: of the 15,285 addresses probed in both the 2026-10-27 and 2026-11-10
+  rounds, 10,822 completed a handshake on 10-27 and 8,230 on 11-10, i.e. **−24%**.
+  Part of the published fall is the candidate set growing with addresses that have
+  never been reachable (16,807 → 17,881 → 18,518).
+- **How to use these days:** read onion `instantaneous` from 2026-11-11 onward as
+  a lower bound that moves with the observer's Tor conditions, and do not read the
+  fall as onion nodes leaving the Bitcoin network. Nothing here supports that
+  reading, and the independent count above argues against it. `by_fail_reason` and
+  `host` are published for every one of these rounds, so the condition can be
+  checked per round instead of taken on trust.
+- **Context, not established cause.** The Tor Project shipped an emergency release
+  (0.4.9.17) on 2026-11-13 in response to an ongoing denial-of-service campaign
+  against the network, and relay operators report relays losing the HSDir role
+  that stores onion service descriptors. That would produce exactly this
+  signature. We have *not* established the link: the observer is a client running
+  0.4.9.11, the reports are relay-side, and no measurement here separates a slow
+  descriptor lookup from a service that has gone away. The controlled re-probe
+  described in the 2026-08-03 entry is the experiment that would settle it, and it
+  has not been run for this period.
+- An earlier, milder episode with the same signature ran 2026-10-11 to 2026-10-14
+  and recovered on its own: on a fixed set of 15,488 addresses, reachability went
+  67.6% → 42.9% (2026-10-13) → 61.1%, with host CPU idle rising from 0.49% to
+  35.20% on the worst day. It was not published as a finding at the time.
+
+## 2026-10-30 — the observer's Tor client stopped working: the 2026-10-29 and 2026-10-30 onion figures are not measurements
+
+- **The onion figures published for these two days are 344 and 0. Both are
+  observer failures.** Discard them. In particular the 0 is not a measurement
+  that no onion node was reachable.
+- Cause: the Tor consensus moved the `Desc=3` and `Microdesc=3` protocols to
+  *required*, and the observer's Tor — 0.4.8.10, the Ubuntu 24.04 package —
+  refused to run as a client without them, logging "This version of Tor will not
+  work as a client on the Tor network" and exiting immediately after loading the
+  consensus. systemd restarted it roughly every 10 s; the restart counter had
+  reached 4,332 when this was found. The first such exit was at **2026-10-28
+  21:57 UTC**, so the 2026-10-29 round was the first one fully affected.
+- The failure is visible in the published data without having to take our word for
+  it. With no working SOCKS proxy, probes fail at once, so `by_fail_reason` is
+  `handshake_error` 9,229 / `refused` 5,793 on 10-29 and `handshake_error` 10,686
+  / `refused` 6,240 on 10-30 — against a normal round dominated by `timeout` and
+  `unreachable` (10-27: 4,406 and 890, with 654 `handshake_error`). Round duration
+  falls from 2h06m to **6 minutes**.
+- Fixed at 2026-10-30 14:49 UTC by upgrading to Tor 0.4.9.11 from
+  `noble-updates`. **The Tor client's version is not part of `params_hash`**, so
+  this date carries a change in measurement conditions that the hash cannot
+  signal — the same gap as the daemon configuration change recorded on
+  2026-08-04.
+- Recovery was gradual rather than immediate: 6,055 (10-31), 7,490 (11-03), 9,030
+  (11-10), against 10,822 on 10-27 — about **16% below the pre-failure level at
+  its best**, before the degradation described in the 2026-11-17 entry took it
+  down again. Whether that shortfall is the new client version, the rebuilt Tor
+  state, or the network conditions of that entry is not something this data
+  separates.
+- 2026-10-28 (9,683 reachable, 53.7%) was already below the preceding days and is
+  *not* explained by this failure, which began that evening. It belongs with the
+  episode described in the 2026-11-17 entry.
+
+## 2026-10-15 — daily export: observation conditions (`host`) added
+
+- Each snapshot now carries a `host` block: `cpu_user_pct`, `cpu_system_pct`,
+  `cpu_idle_pct`, `cpu_iowait_pct`, `cpu_steal_pct` and `loadavg5`, measured over
+  the probing phase of that round only — not over candidate selection or the bulk
+  write, which are the crawler's own CPU work.
+- **Reporting addition only — measurement parameters and `params_hash` are
+  unchanged.** Nothing about how probes are made or classified has changed.
+- The reason it exists: `timeout` cannot distinguish an observer that was starved
+  from one that was waiting, and that distinction has decided the reading of every
+  onion outlier in this file so far. It had to be recovered from the observer's
+  own `sar` history each time, which keeps only days, so a round examined later
+  than that could not be read at all. A high timeout share together with a **high**
+  idle share means the probes were waiting on the network; a low idle share means
+  the observer itself was the limit.
+- **The first daily file carrying it is 2026-10-15.** The block is absent, not
+  zero, in every earlier file.
+- `schema/daily.json` described `by_fail_reason` but not `host` between
+  2026-10-15 and this entry; the field is now in the schema, and like
+  `by_fail_reason` it is not marked required, because earlier files omit it.
+
 ## 2026-08-18 — daily export: `by_fail_reason` added
 
 - Each snapshot now publishes the probes that did not complete a handshake,

@@ -93,6 +93,19 @@
             },
             "description": "Probes that did not complete a handshake, by reason. Complete, never truncated to top N: instantaneous plus these counts equals candidates. Present from the 2026-08-17 daily file onward (exported 2026-08-18); earlier files omit it. The split between timeout and the definite reasons depends on how loaded the observer was, so it is not comparable across the dates recorded in the CHANGELOG"
           },
+          "host": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cpu_user_pct": { "type": "number" },
+              "cpu_system_pct": { "type": "number" },
+              "cpu_idle_pct": { "type": "number" },
+              "cpu_iowait_pct": { "type": "number" },
+              "cpu_steal_pct": { "type": "number" },
+              "loadavg5": { "type": "number" }
+            },
+            "description": "How busy the observer was during this round's probing phase, as percentages of its CPU time plus the 5-minute load average. Present from the 2026-10-15 daily file onward; earlier files omit it. Read it together with by_fail_reason: a high timeout share with a high cpu_idle_pct means the probes were waiting on the network, a low cpu_idle_pct means the observer itself was the limit. See the CHANGELOG entries for 2026-10-15 and 2026-11-17"
+          },
           "by_network": {
             "type": "object",
             "additionalProperties": {
