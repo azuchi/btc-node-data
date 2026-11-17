@@ -61,8 +61,40 @@ History of changes to parameters that affect the measurement methodology.
   signature. We have *not* established the link: the observer is a client running
   0.4.9.11, the reports are relay-side, and no measurement here separates a slow
   descriptor lookup from a service that has gone away. The controlled re-probe
-  described in the 2026-08-03 entry is the experiment that would settle it, and it
-  has not been run for this period.
+  below settles part of it.
+- **Controlled re-probe, 2026-11-17 05:39–06:05 UTC — the 90 s limit is not what
+  is binding, and neither is concurrency.** Two arms, each 200 addresses drawn at
+  random from the same cohort (timed out in the 2026-11-16 round, completed a
+  handshake on 2026-10-27), the second arm disjoint from the first, both run
+  outside any round:
+
+  | Arm | Concurrency | Timeout | OK | `unreachable` | `handshake_error` | `timeout` | Wall |
+  |---|---|---|---|---|---|---|---|
+  | A | 20 | 300 s | 112 (56.0%) | 85 (42.5%) | 3 (1.5%) | 0 | 6m |
+  | B (production parameters) | 90 | 90 s | 129 (64.5%) | 63 (31.5%) | 5 (2.5%) | 3 (1.5%) | 3m |
+
+  Handshakes completed in a median of 6.9 s (arm A; p90 10.2 s, max 56.8 s) and
+  9.9 s (arm B; p90 14.3 s, max 47.1 s). **Not one of the 241 successful probes
+  took longer than the production 90 s limit.** In the 2026-11-16 round the same
+  cohort timed out at 72%.
+- **What that rules out, and what it leaves.** Raising the onion timeout would not
+  recover these addresses, unlike the 2026-08-03 case — they resolve in seconds.
+  Nor is the production concurrency of 90 the constraint: arm B used it and timed
+  out on 1.5% of probes. What distinguishes a round from these arms is its scale
+  and duration — 18,518 addresses over 4h24m against 200 over three minutes — so
+  the working explanation is that the observer's Tor daemons degrade over the
+  course of a round, in the manner of the 2026-08-04 entry rather than of
+  2026-08-03. That is a hypothesis: no measurement here was taken *during* a
+  round, and the figures above cannot be extrapolated to one.
+- **What the re-probe does establish about the cohort**: between 56% and 65% of
+  the addresses that a round records as `timeout` are reachable within seconds
+  when measured outside one, so for those the published `timeout` reflects the
+  observer, not the node. The remaining 31.5–42.5% return a definite
+  `unreachable` even without contention and with a 300 s budget; that share is
+  *not* explained by the observer, and it is the only part of this episode
+  consistent with descriptors having become unavailable network-side. Whether
+  those services are gone or their descriptors cannot be fetched is still not
+  distinguished here.
 - An earlier, milder episode with the same signature ran 2026-10-11 to 2026-10-14
   and recovered on its own: on a fixed set of 15,488 addresses, reachability went
   67.6% → 42.9% (2026-10-13) → 61.1%, with host CPU idle rising from 0.49% to
